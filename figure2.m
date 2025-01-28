@@ -92,7 +92,7 @@ units_mtl=v_oralfacial_analysis.BreathingTuning * v_ephys.Unit * v_histology.Ele
 plotBrain
 hold on
 % masseter tracing
-load('A:\JunData\Masseter.mat')
+load('.\data\JunData\Masseter.mat')
 Masset=table2array(roi_table{1,1}(:,3:5));
 Masset(:,1)=5.4-Masset(:,1);
 Masset(:,3)=5.7-Masset(:,3);
@@ -104,7 +104,7 @@ dX_m=(edges_m{3}(2)-edges_m{3}(1))/2;
 dY_m=(edges_m{1}(2)-edges_m{1}(1))/2;
 dZ_m=(edges_m{2}(2)-edges_m{2}(1))/2;
 % genio
-Genio=dlmread('A:\JunData\024retro_genio3.txt',',',2,2);
+Genio=dlmread('.\data\JunData\024retro_genio3.txt',',',2,2);
 Genio=Genio(:,1:3);
 Genio(:,1)=5.4-Genio(:,1);
 Genio(:,3)=5.7-Genio(:,3);
@@ -179,7 +179,7 @@ units_mtl=v_oralfacial_analysis.JawTuning * v_ephys.Unit * v_histology.Electrode
 plotBrain
 hold on
 % masseter tracing
-load('A:\JunData\Masseter.mat')
+load('.\data\JunData\Masseter.mat')
 Masset=table2array(roi_table{1,1}(:,3:5));
 Masset(:,1)=5.4-Masset(:,1);
 Masset(:,3)=5.7-Masset(:,3);
@@ -191,7 +191,7 @@ dX_m=(edges_m{3}(2)-edges_m{3}(1))/2;
 dY_m=(edges_m{1}(2)-edges_m{1}(1))/2;
 dZ_m=(edges_m{2}(2)-edges_m{2}(1))/2;
 % genio
-Genio=dlmread('A:\JunData\024retro_genio3.txt',',',2,2);
+Genio=dlmread('.\data\JunData\024retro_genio3.txt',',',2,2);
 Genio=Genio(:,1:3);
 Genio(:,1)=5.4-Genio(:,1);
 Genio(:,3)=5.7-Genio(:,3);
