@@ -134,26 +134,6 @@ fig = plot_1c(session_key, trials)
 
 
 #%% Figure 1d
-def get_breathing_hist(session_keys):
-    inspir_onset = []
-    for session_key in session_keys:    
-        _inspir_onset=(oralfacial_analysis.MovementTiming & session_key).fetch1('inspiration_onset')
-        inspir_onset.append(1/np.diff(_inspir_onset))
-    inspir_onset = np.hstack(inspir_onset)      
-    
-    return inspir_onset
-
-def get_licking_hist(session_keys):
-    licks = []
-    for session_key in session_keys:
-        ton_onset, lick_onset, lick_offset = (oralfacial_analysis.MovementTiming & session_key).fetch1( 'tongue_onset', 'lick_onset', 'lick_offset')
-        for _lick_on, _lick_off in zip(lick_onset, lick_offset):
-            _licks = ton_onset[(ton_onset>=_lick_on) & (ton_onset<=_lick_off)]
-            licks.append(1/np.diff(_licks))
-    licks = np.hstack(licks)
-
-    return licks
-
 def plot_1d(breathing_data, licking_data):
     fig, ax = plt.subplots(1, 1, figsize=(6, 6))
     ax.hist(breathing_data, 40,range=[0,12], histtype='step', color='g', linewidth=2, density=True, label='breaths')
