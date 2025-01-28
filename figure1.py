@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jul 15 11:55:38 2024
-
-@author: NuoLiLabTower2
-"""
-
 import numpy as np
 import scipy
 import matplotlib as mpl
