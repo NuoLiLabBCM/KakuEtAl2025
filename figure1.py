@@ -35,59 +35,14 @@ def compute_psth(aligned_spikes, bin_size=0.05, window=[-1, 1]):
 
 
     return bins[:-1], all_histograms
-
 #%% Figure 1c
-def plot_1c(session_key, trials):
+def plot_1c(data):
     """ """
-    traces_len=1471
-    bin_width=0.0034
-    tongue_thr = 0.05
-    session_traces_b_y=(v_tracking.TongueTracking3DBot & session_key & [{'trial': tr} for tr in trials]).fetch('tongue_y')
-    session_traces_s_l_master = (tracking.Tracking.TongueTracking & {'tracking_device': 'Camera 3'} & session_key & [{'trial': tr} for tr in trials]).fetch('tongue_likelihood', order_by='trial')
-    session_traces_s_l = []
-    for i in range(session_traces_s_l_master.shape[0]):
-        arr =session_traces_s_l_master[i].copy()
-        arr[0] = 0
-        arr[-1] = 0
-        session_traces_s_l.append(arr)
-    session_traces_b_l_master = (tracking.Tracking.TongueTracking & {'tracking_device': 'Camera 4'} & session_key & [{'trial': tr} for tr in trials]).fetch('tongue_likelihood', order_by='trial')
-    session_traces_b_l = []
-    for i in range(session_traces_b_l_master.shape[0]):
-        arr =session_traces_b_l_master[i].copy()
-        arr[0] = 0
-        arr[-1] = 0
-        session_traces_b_l.append(arr)
-    
-    session_traces_b_y = np.vstack(session_traces_b_y)
-    session_traces_s_l = np.vstack(session_traces_s_l)
-    session_traces_b_l = np.vstack(session_traces_b_l)
-    session_traces_t_l = session_traces_b_l
-    session_traces_t_l[np.where((session_traces_s_l > tongue_thr) & (session_traces_b_l > tongue_thr))] = 1
-    session_traces_t_l[np.where((session_traces_s_l <= tongue_thr) | (session_traces_b_l <= tongue_thr))] = 0
-    session_traces_t_l = np.hstack(session_traces_t_l)
-    session_traces_b_y = np.hstack(session_traces_b_y)
-    session_traces_b_y=session_traces_b_y*session_traces_t_l
-    session_traces_b_y=stats.zscore(session_traces_b_y,axis=None)
-    
-    session_traces_s_y=(v_tracking.JawTracking3DSid & session_key & [{'trial': tr} for tr in trials]).fetch('jaw_y')
-    session_traces_s_y=stats.zscore(np.vstack(session_traces_s_y),axis=None)
-    session_traces_s_y = np.hstack(session_traces_s_y)
-    
-    # get breathing
-    breathing, breathing_ts = (experiment.Breathing & session_key & [{'trial': tr} for tr in trials]).fetch('breathing', 'breathing_timestamps', order_by='trial')
-    good_breathing = breathing
-    for i, d in enumerate(breathing):
-        good_breathing[i] = d[breathing_ts[i] < traces_len*3.4/1000]
-    good_breathing = stats.zscore(np.vstack(good_breathing),axis=None)
-    
-    good_breathing = np.hstack(good_breathing)
-    # -- moving-average
-    window_size = int(round(bin_width/(breathing_ts[0][1]-breathing_ts[0][0]),0))  # sample
-    kernel = np.ones(window_size) / window_size
-    good_breathing = np.convolve(good_breathing, kernel, 'same')
-    # -- down-sample
-    good_breathing = good_breathing[window_size::window_size]
-    good_breathing = np.reshape(good_breathing,(-1,1))
+    ton_onset = data[0]
+    ton_offset = data[1]
+    session_traces_b_y = data[2]
+    session_traces_s_y = data[3]
+    good_breathing = data[4]
     
     # canvas setup
     fig = plt.figure(figsize=(16,5))
@@ -97,11 +52,6 @@ def plot_1c(session_key, trials):
     ax_lick = plt.subplot(grid[1:2, 0:9])
     ax_brth = plt.subplot(grid[2:3, 0:9])
       
-    threshold = 0.5 # tongue detection
-    ton_onset = (session_traces_t_l < threshold) & (np.roll(session_traces_t_l,-1) >= threshold)
-    ton_offset = (session_traces_t_l > threshold) & (np.roll(session_traces_t_l,-1) <= threshold)
-    ton_onset=np.argwhere(ton_onset)[:,0]
-    ton_offset=np.argwhere(ton_offset)[:,0]
     t_x=np.arange(len(session_traces_b_y))*0.0034
     
     for i, t in enumerate(ton_onset):
@@ -125,13 +75,12 @@ def plot_1c(session_key, trials):
     ax_brth.spines['top'].set_visible(False)
     ax_brth.set_xlim(0, 10)
     ax_brth.set_xlabel("Time (s)")
-    
     return fig
+    
 
-session_key={'subject_id': 3379, 'session': 2, 'insertion_number': 1}
-trials = np.array([227, 288]) 
-fig = plot_1c(session_key, trials)
-
+fname = r'.\data\figure_1\data_for_fig_1c.pkl'
+with open(fname, 'rb') as f: 
+    data = pickle.load(f)
 
 #%% Figure 1d
 def plot_1d(breathing_data, licking_data):
