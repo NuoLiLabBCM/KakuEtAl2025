@@ -7,13 +7,8 @@ mpl.rcParams['ps.fonttype']=42
 import matplotlib.pyplot as plt
 plt.rcParams['font.size'] = 48
 plt.rcParams['svg.fonttype'] = 'none'
-import datajoint as dj
 from scipy import stats
 import pickle
-
-from pipeline import oralfacial_analysis, experiment, tracking
-v_oralfacial_analysis = dj.create_virtual_module('oralfacial_analysis', 'map_v2_oralfacial_analysis')
-v_tracking = dj.create_virtual_module('tracking', 'map_v2_tracking')
 
 #%% figure specific functions
 def compute_psth(aligned_spikes, bin_size=0.05, window=[-1, 1]):
