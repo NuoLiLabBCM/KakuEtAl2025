@@ -1,7 +1,3 @@
-%% Init
-clc; clear all
-cd C:\Users\NuoLiLabTower2\Documents\GitHub\map-ephys\MATLAB\pipeline
-init;
 %% fig 3a
 plotBrain
 hold on
@@ -69,9 +65,7 @@ view(180, 0); xlim([3 8.4]); ylim([9 13.2]); zlim([3 8]) % zoom
 axis on
 
 %% figure 3b
-units_mtl=v_oralfacial_analysis.JawTuning * v_ephys.Unit * v_histology.ElectrodeCCFPositionElectrodePosition;
-[colorVarMI, colorVarPh, kuiper_p, mi_perm, ccf_unitxA, ccf_unityA, ccf_unitzA] = units_mtl.fetchn('modulation_index', 'preferred_phase', 'kuiper_test', 'di_perm', 'ccf_x', 'ccf_y', 'ccf_z');
-
+load('.\data\figure_3\data_for_fig_3b.mat')
 plotBrain
 hold on
 
