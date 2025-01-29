@@ -1,9 +1,4 @@
-%% Init
-clc; clear all
-init;
 %% fig 2d (Recording coverage)
-units_mtl=v_oralfacial_analysis.JawTuning * v_ephys.Unit * v_histology.ElectrodeCCFPositionElectrodePosition * v_ephys.UnitStat;
-[colorVarMI, colorVarPh, kuiper_p, mi_perm, ccf_unitxA, ccf_unityA, ccf_unitzA, unit_amp, unit_fr] = units_mtl.fetchn('modulation_index', 'preferred_phase', 'kuiper_test', 'di_perm', 'ccf_x', 'ccf_y', 'ccf_z','unit_amp','avg_firing_rate');
 % plot surface volumes 
 plotBrain
 hold on
@@ -22,13 +17,12 @@ plotAregion(621,'c');
 % vestibular nucleus
 plotAregion([209 217],'b') % superior
 
-% query and fetch tracks
-mtl_track=v_ephys.ProbeInsertion * v_experiment.Session & 'rig="RRig-MTL"';
-track_key=mtl_track.fetch();
-% for i_track=round(9*length(track_key)/10):round(9.2*length(track_key)/10)
-for i_track=1:length(track_key)
-    sites=v_histology.ElectrodeCCFPositionElectrodePosition & track_key(i_track);
-    [ccf_unitxT, ccf_unityT, ccf_unitzT] = sites.fetchn('ccf_x', 'ccf_y', 'ccf_z');
+
+load('.\data\figure_2\data_for_fig_2d.mat')
+for i_track=1:length(ccf_unitxT_master)    
+    ccf_unitxT = ccf_unitxT_master{i_track};
+    ccf_unityT = ccf_unityT_master{i_track};
+    ccf_unitzT = ccf_unitzT_master{i_track};
     hold on
     plot3(ccf_unitxT/1000,ccf_unitzT/1000,ccf_unityT/1000,'r','LineWidth', 0.01)
 end
@@ -40,6 +34,7 @@ view(90, 0); xlim([3 8.4]); ylim([9 13.2]); zlim([3 8]) % zoom
 axis on
 
 %% fig 2e (Firing rates)
+load('.\data\figure_2\data_for_fig_2e.mat')
 % plot surface volumes 
 plotBrain
 hold on
@@ -86,8 +81,7 @@ view(180, 0); xlim([3 8.4]); ylim([9 13.2]); zlim([3 8]) % zoom
 colorbar
 ccf_unitzA=temp;
 %% fig 2f (Breathing activity map)
-units_mtl=v_oralfacial_analysis.BreathingTuning * v_ephys.Unit * v_histology.ElectrodeCCFPositionElectrodePosition;
-[colorVarMI, colorVarPh, ccf_unitxA, ccf_unityA, ccf_unitzA] = units_mtl.fetchn('modulation_index', 'preferred_phase', 'ccf_x', 'ccf_y', 'ccf_z');
+load('.\data\figure_2\data_for_fig_2f.mat')
 % plot brain
 plotBrain
 hold on
@@ -173,8 +167,7 @@ view(180, 0); xlim([3 8.4]); ylim([9 13.2]); zlim([3 8]) % zoom
 colorbar
 ccf_unitzA = temp;
 %% fig 2g (licking activity map)
-units_mtl=v_oralfacial_analysis.JawTuning * v_ephys.Unit * v_histology.ElectrodeCCFPositionElectrodePosition;
-[colorVarMI, colorVarPh, kuiper_p, mi_perm, ccf_unitxA, ccf_unityA, ccf_unitzA] = units_mtl.fetchn('modulation_index', 'preferred_phase', 'kuiper_test', 'di_perm', 'ccf_x', 'ccf_y', 'ccf_z');
+load('.\data\figure_2\data_for_fig_2g.mat')
 % plot brain
 plotBrain
 hold on
@@ -258,26 +251,7 @@ view(180, 0); xlim([3 8.4]); ylim([9 13.2]); zlim([3 8]) % zoom
 colorbar
 ccf_unitzA = temp;
 %% fig 2h (swallow activity map)
-load('.\data\figure_2\swallow.mat');
-load('.\data\figure_2\pvals_logical_and_bootstrap_test_part_1.mat') 
-load('.\data\figure_2\pvals_logical_and_bootstrap_test_part_2.mat')
-modulation_index = modulation_indexNEW;
-pvals = pvalsNEW;
-ccf_x = double(ephys.ccf_x); % ccf x coord
-ccf_y = double(ephys.ccf_y); % ccf y coord
-ccf_z = double(ephys.ccf_z); %ccf z coord
-
-%for bootstrapped test
-mi = mean(modulation_index,2).';
-num_events = active_trials;
-pvals = max(pvals, [], 2).';
-
-mi(pvals>0.01)=0; %change mod index for all non-sig neurons
-mi(num_events<20)=0; %change mod index for all neurons less than 20 swallows
-mi(mi<0.3) = 0;
-
-colorVarMI = mi;
-
+load('.\data\figure_2\data_for_fig_2h.mat')
 plotBrain
 hold on
 % masseter tracing
