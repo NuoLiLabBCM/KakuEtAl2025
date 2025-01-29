@@ -105,9 +105,8 @@ licking_data = data['licking_data']
 fig, ax = plot_1d(breathing_data, licking_data)
 
 #%% Figure 1f
-def plot_1f1(session_key):
-    inspir_onset,lick_onset_time,lick_offset_time,ton_onset=(oralfacial_analysis.MovementTiming & session_key).fetch1('inspiration_onset','lick_onset','lick_offset','tongue_onset')
-    
+def plot_1f1(data):
+    inspir_onset, lick_onset_time, lick_offset_time, ton_onset = data
     inspir_onset_l=[] 
     for i,val in enumerate(lick_onset_time):
         inspir_onset_l.append(inspir_onset[(inspir_onset>(lick_onset_time[i]+0.2)) & (inspir_onset<(lick_offset_time[i]-0.2))])
@@ -168,7 +167,6 @@ def plot_1f1(session_key):
     sorted_indexes=sorted_indexes[::-1]
     
     d_bound=(np.mean(ibi[n_licks==2]) + np.mean(ibi[n_licks==1]))/2
-    
     fig, ax = plt.subplots(1, 1, figsize=(6.5,8.5))
     plot_db=False
     for i,_ in enumerate(licks):
@@ -200,9 +198,9 @@ def plot_1f1(session_key):
 
 
 
-def plot_1f2(session_key):
+def plot_1f2(data):
     fig, ax = plt.subplots(1, 1, figsize=(8, 8))
-    psth_bins,psth_lick_1,psth_lick_2,sem_lick_1,sem_lick_2,peaks_lick_1,peaks_lick_2=(oralfacial_analysis.LickResetBN & session_key).fetch('psth_bins','psth_lick_1','psth_lick_2','sem_lick_1','sem_lick_2','peaks_lick_1','peaks_lick_2')
+    psth_bins,psth_lick_1,psth_lick_2,sem_lick_1,sem_lick_2,peaks_lick_1,peaks_lick_2 = data
     ax.plot(psth_bins[0],psth_lick_1[0],'b')
     ax.plot(psth_bins[0],psth_lick_2[0],'k')
     if peaks_lick_1[0].size>0:
@@ -222,23 +220,28 @@ def plot_1f2(session_key):
     return fig
 
 
+fname = r'.\data\figure_1\data_for_fig_1f1.pkl'
+with open(fname, 'rb') as f: 
+    data = pickle.load(f)
+f.close()
+fig=plot_1f1(data)
 
-session_key = {'subject_id': 1114, 'session': 3}
-fig=plot_1f1(session_key)
-fig=plot_1f2(session_key)
+fname = r'.\data\figure_1\data_for_fig_1f2.pkl'
+with open(fname, 'rb') as f: 
+    data = pickle.load(f)
+f.close()
+fig=plot_1f2(data)
 
-#%% Fgiure 1g
-def plot_1g(units_mtl_lick):
+#%% Figure 1g
+def plot_1g(data):
     """ """
-    peaks_lick_1,peaks_lick_2,keys= units_mtl_lick.fetch('peaks_lick_1','peaks_lick_2','KEY')
+    peaks_lick_1,peaks_lick_2 = data
     lick_time_diff=[]
-    key_list=[]
     x_min=-0.08
     x_max=0.08
     for i,_ in enumerate(peaks_lick_1):
         if (peaks_lick_1[i].size>0) & (peaks_lick_2[i].size>0):
             lick_time_diff.append(peaks_lick_2[i][0]-peaks_lick_1[i][0])
-            key_list.append(keys[i])
     fig, ax = plt.subplots(1, 1,figsize=(8, 8))
     ax.hist(lick_time_diff,range=(x_min, x_max), bins=9, color='k', histtype='step', linewidth=2)
     ax.spines['right'].set_visible(False)
@@ -249,15 +252,17 @@ def plot_1g(units_mtl_lick):
     
     return fig, ax, lick_time_diff
 
-units_mtl_lick=oralfacial_analysis.LickResetBN
-fig, ax, data = plot_1g(units_mtl_lick)
-tstat, p = stats.ttest_1samp(data, 0)
-print("Lick latency\nT-statistic: {:.3f}\np-value: {:.3f}" .format(tstat, p))
+
+fname = r'.\data\figure_1\data_for_fig_1g.pkl'
+with open(fname, 'rb') as f: 
+    data = pickle.load(f)
+f.close()
+fig, ax, data = plot_1g(data)
 
 #%% Figure 1h
-def plot_1h1(session_key):
-    inspir_onset,lick_onset_time,lick_offset_time,ton_onset=(oralfacial_analysis.MovementTiming & session_key).fetch1('inspiration_onset','lick_onset','lick_offset','tongue_onset')
-    
+def plot_1h1(data):
+    """ """
+    inspir_onset,lick_onset_time,lick_offset_time,ton_onset = data    
     ton_onset_l=[] 
     for i,val in enumerate(lick_onset_time):
         ton_onset_l.append(ton_onset[(ton_onset>(lick_onset_time[i]+0.2)) & (ton_onset<(lick_offset_time[i]-0.2))])
@@ -314,9 +319,10 @@ def plot_1h1(session_key):
     
     return fig
 
-def plot_1h2(session_key):
+def plot_1h2(data):
+    """ """
     fig, ax = plt.subplots(1, 1, figsize=(8, 8))
-    psth_bins,psth_breath_1,psth_breath_2,sem_breath_1,sem_breath_2,peaks_breath_1,peaks_breath_2=(oralfacial_analysis.BreathResetB & session_key).fetch('psth_bins','psth_breath_1','psth_breath_2','sem_breath_1','sem_breath_2','peaks_breath_1','peaks_breath_2')
+    psth_bins,psth_breath_1,psth_breath_2,sem_breath_1,sem_breath_2,peaks_breath_1,peaks_breath_2 = data
     ax.plot(psth_bins[0],psth_breath_1[0],'b')
     ax.plot(psth_bins[0],psth_breath_2[0],'k')
     if peaks_breath_1[0].size>0:
@@ -336,22 +342,29 @@ def plot_1h2(session_key):
     return fig
 
 
-session_key = {'subject_id': 1114, 'session': 3}
-fig=plot_1h1(session_key)
-fig=plot_1h2(session_key)
+
+fname = r'.\data\figure_1\data_for_fig_1h1.pkl'
+with open(fname, 'rb') as f: 
+    data = pickle.load(f)
+f.close()
+fig=plot_1h1(data)
+
+fname = r'.\data\figure_1\data_for_fig_1h2.pkl'
+with open(fname, 'rb') as f: 
+    data = pickle.load(f)
+f.close()
+fig=plot_1h2(data)
 
 #%% Figure 1i
-def plot_1i(units_mtl_breath):
+def plot_1i(data):
     """ """
-    peaks_breath_1,peaks_breath_2,keys= units_mtl_breath.fetch('peaks_breath_1','peaks_breath_2','KEY')
+    peaks_breath_1,peaks_breath_2 = data
     breath_time_diff=[]
-    key_list=[]
     x_min=-0.08
     x_max=0.08
     for i,_ in enumerate(peaks_breath_1):
         if (peaks_breath_1[i].size>0) & (peaks_breath_2[i].size>0):
             breath_time_diff.append(peaks_breath_2[i][0]-peaks_breath_1[i][0])
-            key_list.append(keys[i])
     fig, ax = plt.subplots(1, 1,figsize=(8, 8))
     ax.hist(breath_time_diff,range=(x_min, x_max), bins=10, color='k', histtype='step', linewidth=2)
     ax.spines['right'].set_visible(False)
@@ -360,12 +373,13 @@ def plot_1i(units_mtl_breath):
     ax.set_xlim((x_min,x_max))
     ax.axvline(0, color='gray', linestyle='--')
     
-    return fig, ax, breath_time_diff
+    return fig, ax
 
-units_mtl_breath=oralfacial_analysis.BreathResetB
-fig, ax, data = plot_1i(units_mtl_breath)
-tstat, p = stats.ttest_1samp(data, 0)
-print("\n\nLick Breath:\nT-statistic: {:.3f}\np-value: {:.3f}" .format(tstat, p))
+fname = r'.\data\figure_1\data_for_fig_1i.pkl'
+with open(fname, 'rb') as f: 
+    data = pickle.load(f)
+f.close()
+fig, ax = plot_1i(data)
 
 #%% Figure 1k
 with open(r'.\data\figure_1\data_for_fig_1k.pkl', 'rb') as f: 
