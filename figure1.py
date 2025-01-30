@@ -1,12 +1,6 @@
 import numpy as np
 import scipy
-import matplotlib as mpl
-mpl.rcParams['pdf.fonttype']=42
-mpl.rcParams['ps.fonttype']=42
-
 import matplotlib.pyplot as plt
-plt.rcParams['font.size'] = 48
-plt.rcParams['svg.fonttype'] = 'none'
 from scipy import stats
 import pickle
 
