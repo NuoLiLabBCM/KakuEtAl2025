@@ -1,5 +1,5 @@
 # KakuEtAl2025
-Data analysis code for Kaku, Liu et al A brainstem map of orofacial rhythms
+Data analysis code for [**Kaku, Liu et al. A brainstem map of orofacial rhythms**](https://www.biorxiv.org/content/10.1101/2025.01.27.635041v1)
 
 ## Installation
 #### NWB to MAT converter (MATLAB >=2024b required)
