@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug 25 09:59:06 2025
-
-@author: NuoLiLabTower2
-"""
 import scipy
 from scipy.io import loadmat, savemat
 from scipy import stats, signal
