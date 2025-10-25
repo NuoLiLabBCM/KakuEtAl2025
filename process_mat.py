@@ -1605,5 +1605,5 @@ for _c, fname in enumerate(filenames):
         print("\nElapsed time: {:.2f} minutes" .format(elapsed_time/60))
         
 loop_end = time.perf_counter()
-loop_elapsed_time = end_time - start_time
+loop_elapsed_time = loop_start - loop_end
 print("\n\nTotal Elapsed time: {:.2f} minutes" .format(loop_elapsed_time/60))

@@ -460,7 +460,7 @@ def plot_summary(export_path):
     
     swallow_aligned_licks, swallow_aligned_breaths = [], []
     
-    mat_files = glob.glob(os.path.join(export_path, "*.mat"))
+    mat_files = glob.glob(os.path.join(export_path, "*processed.mat"))
     for i, mat_file in enumerate(mat_files):
         print("Working on {} of {}" .format(i+1, len(mat_files)))
         mat = loadmat(mat_file, simplify_cells=True)
@@ -866,7 +866,7 @@ def plot_swallow_psth_raster(mat, unit_key):
 #%% figure 1 and 4 driver
 
 ###### USER INPUT
-export_path = r'D:/mat/'
+export_path = r'D:/mat/' #directory containing *_processed MAT files
 #####
 
 fpath = os.path.join(export_path, 'map-export_DL025_20210622_150251_s3_p2_nwb_processed.mat')
