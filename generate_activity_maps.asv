@@ -1,0 +1,100 @@
+%% Init
+clc; clear all
+% Define directory
+export_path = 'D:/mat/';
+
+% Get all files ending with 'processed.mat'
+files = dir(fullfile(export_path, '*processed.mat'));
+
+% Initialize storage
+ccf_unitxA = [];
+ccf_unityA = [];
+ccf_unitzA = [];
+jaw_tuning = [];
+breath_tuning = [];
+swallow_tuning = [];
+swallow_ccf_x = [];
+swallow_ccf_y = [];
+swallow_ccf_z = [];
+num_events = [];
+swallow_pvals = [];
+
+for i = 1:numel(files)
+    disp(num2str(i));
+    fname = fullfile(export_path, files(i).name);
+    data = load(fname, 'processed');
+    if isfield(data, 'processed') && isfield(data.processed, 'ccf_x')
+        ccf_unitxA = [ccf_unitxA; data.processed.ccf_x(:)];
+        ccf_unityA = [ccf_unityA; data.processed.ccf_y(:)];
+        ccf_unitzA = [ccf_unitzA; data.processed.ccf_z(:)];
+        jaw_tuning = [jaw_tuning; data.processed.jaw_tuning(:)];
+        breath_tuning = [breath_tuning; data.processed.breath_tuning(:)];
+    end
+    if isfield(data.processed, 'swallow_tuning')
+        sw_tuning = data.processed.swallow_tuning;
+        sw_tuning = mean(sw_tuning,2);
+        swallow_tuning = [swallow_tuning; sw_tuning];
+        num_events = [num_events; data.processed.unit_swallow_count(:)];
+        pvals = data.processed.unit_swallow_pval;
+        pvals = max(pvals, [], 2);
+        swallow_pvals = [swallow_pvals; pvals];
+
+        swallow_ccf_x = [swallow_ccf_x; data.processed.ccf_x(:)];
+        swallow_ccf_y = [swallow_ccf_y; data.processed.ccf_y(:)];
+        swallow_ccf_z = [swallow_ccf_z; data.processed.ccf_z(:)];
+    end
+end
+
+ccf_unitxA = double(ccf_unitxA);
+ccf_unityA = double(ccf_unityA);
+ccf_unitzA = double(ccf_unitzA);
+swallow_ccf_x = double(swallow_ccf_x);
+swallow_ccf_y = double(swallow_ccf_y);
+swallow_ccf_z = double(swallow_ccf_z);
+%% Breathing activity map
+plotBrain
+hold on
+temp = ccf_unitxA;
+ccf_unitxA(:) = 5000;
+sizeVarMI = (breath_tuning*8)+5; %scale dot size according to modulation index (dotsize range 5-13)
+[~,idx] = sort(breath_tuning);
+scatter3(ccf_unitxA(idx)/1000, ccf_unitzA(idx)/1000, ccf_unityA(idx)/1000,sizeVarMI(idx),breath_tuning(idx),'filled')
+crameri('lajolla',32)
+caxis([0.4 1])  
+axis on
+view(90, 0); xlim([3 8.4]); ylim([9 13.2]); zlim([3 8]) % sagittal view
+ccf_unitxA = temp;
+%% Licking activity map
+plotBrain
+hold on
+temp = ccf_unitxA;
+ccf_unitxA(:) = 5000;
+sizeVarMI = (jaw_tuning*8)+5; %scale dot size according to modulation index (dotsize range 5-13)
+[~,idx] = sort(jaw_tuning);
+scatter3(ccf_unitxA(idx)/1000, ccf_unitzA(idx)/1000, ccf_unityA(idx)/1000,sizeVarMI(idx),jaw_tuning(idx),'filled')
+crameri('lajolla',32)
+caxis([0.4 1])  
+axis on
+view(90, 0); xlim([3 8.4]); ylim([9 13.2]); zlim([3 8]) % sagittal view
+ccf_unitxA = temp;
+%% Swallow activity map
+mi = swallow_tuning;
+mi(swallow_pvals>0.01)=0;
+mi(num_events<20)=0; 
+mi(mi<0.3) = 0;
+plotBrain
+hold on
+scatter3(swallow_ccf_x/1000, swallow_ccf_z/1000, swallow_ccf_y/1000, 8, mi,'filled')
+crameri('lajolla',32)
+caxis([0 1])  
+axis on
+view(90, 0); xlim([3 8.4]); ylim([9 13.2]); zlim([3 8]) % sagittal view
+
+
+temp = swallow_ccf_x;
+ccf_x(:) = 5000;
+sizeVarMI = (colorVarMI*13)+5; %scale dot size according to modulation index (dotsize range 5-18)
+[~,idx] = sort(colorVarMI);
+
+scatter3(ccf_x(idx)/1000, ccf_z(idx)/1000, ccf_y(idx)/1000,sizeVarMI(idx),colorVarMI(idx), 'filled')
+swallow_ccf_x

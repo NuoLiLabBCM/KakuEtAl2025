@@ -26,4 +26,4 @@ Convert NWB files to MAT files for processing using the nwb2mat from command lin
 Run process_mat.py (Change `input_dir` to the folder containing MAT files generated in step 2). This will create and save MAT files with the suffix `'_processed'` containing key analysis results from the [publication](https://www.biorxiv.org/content/10.1101/2025.01.27.635041v1).
 
 ### Step 4
-Run generate_figures.py to plot key figures from the [publication](https://www.biorxiv.org/content/10.1101/2025.01.27.635041v1).
+Run generate_figures.py and generate_activity_maps.m to plot key figures from the [publication](https://www.biorxiv.org/content/10.1101/2025.01.27.635041v1).
