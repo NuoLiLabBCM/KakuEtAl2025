@@ -346,6 +346,7 @@ def plot_licking_swallow_summary(licks, num_after=2, num_before=4, max_ili=1/3, 
     ili = []
     filtered_licks = []
     for lick in licks:
+        lick = np.atleast_1d(lick)
         if (lick[lick>=0].size >= num_after) & (lick[lick<0].size >= num_before): #at least 2 licks after and 4 licks before
             before_4, before_3, before_2, before_1 = lick[lick<0][-num_before:]
             after_1, after_2 = lick[lick>=0][:num_after]
@@ -386,14 +387,14 @@ def plot_licking_swallow_summary(licks, num_after=2, num_before=4, max_ili=1/3, 
     
     
     fig2, ax = plt.subplots()
-    ax.hist(del_0neg1, bins=bins, range=(bins[0], bins[-1]), density=True, color='black', linewidth=4, histtype='step', label='\u0394(0,-1)')
-    ax.hist(del_1neg1, bins=bins, range=(bins[0], bins[-1]), density=True, color='crimson', linewidth=4, histtype='step', label='\u0394(1,-1)')
+    ax.hist(del_0neg1, bins=bins, range=(bins[0], bins[-1]), density=False, color='black', linewidth=4, histtype='step', label='\u0394(0,-1)')
+    ax.hist(del_1neg1, bins=bins, range=(bins[0], bins[-1]), density=False, color='crimson', linewidth=4, histtype='step', label='\u0394(1,-1)')
     ax.set_xlim(-0.1, 0.1)
     ax.axvline(0, color='gray', linestyle='--')
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     ax.set_xlabel('Time (s)')
-    ax.set_ylabel('Probability density')
+    ax.set_ylabel('# of licks')
     ax.legend()
 
 def plot_breath_swallow_summary(licks, num_after=2, num_before=4, max_ili=1/2, min_ili=1/15, split=3):
@@ -401,6 +402,7 @@ def plot_breath_swallow_summary(licks, num_after=2, num_before=4, max_ili=1/2, m
     ili = []
     filtered_licks = []
     for lick in licks:
+        lick = np.atleast_1d(lick)
         if (lick[lick>=0].size >= num_after) & (lick[lick<0].size >= num_before): #at least 2 licks after and 4 licks before
             before_4, before_3, before_2, before_1 = lick[lick<0][-num_before:]
             after_1, after_2 = lick[lick>=0][:num_after]
@@ -440,21 +442,19 @@ def plot_breath_swallow_summary(licks, num_after=2, num_before=4, max_ili=1/2, m
     
     
     fig2, ax = plt.subplots()
-    ax.hist(del_0neg1, bins=bins, range=(bins[0], bins[-1]), density=True, color='black', linewidth=4, histtype='step', label='\u0394(0,-1)')
-    # ax.hist(del_01, bins=bins, range=(bins[0], bins[-1]), density=True, color='darkgray', linewidth=4, histtype='step', label='\u0394(0,1)')
-    ax.hist(del_1neg1, bins=bins, range=(bins[0], bins[-1]), density=True, color='crimson', linewidth=4, histtype='step', label='\u0394(1,-1)')
+    ax.hist(del_0neg1, bins=bins, range=(bins[0], bins[-1]), density=False, color='black', linewidth=4, histtype='step', label='\u0394(0,-1)')
+    ax.hist(del_1neg1, bins=bins, range=(bins[0], bins[-1]), density=False, color='crimson', linewidth=4, histtype='step', label='\u0394(1,-1)')
     ax.set_xlim(-0.2, 0.2)
     ax.axvline(0, color='gray', linestyle='--')
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     ax.set_xlabel('Time (s)')
-    ax.set_ylabel('Probability density')
+    ax.set_ylabel('# of breaths')
     ax.legend()
 
 def plot_summary(export_path):
     """ """
     session_keys = []
-    
     peak_diff_br_behv, peak_diff_br_unit = [], []
     peak_diff_lick_behv, peak_diff_lick_unit = [], []
     
@@ -464,10 +464,9 @@ def plot_summary(export_path):
     for i, mat_file in enumerate(mat_files):
         print("Working on {} of {}" .format(i+1, len(mat_files)))
         mat = loadmat(mat_file, simplify_cells=True)
-        
         breath_tunings = mat['processed']['breath_tuning']
         indexes = np.where(breath_tunings>0.9)[0]
-        if (indexes.size>0) & (mat['processed']['peak_diff_breath']['unit']['psth_bins'].size>0):
+        if (indexes.size>0) & (mat['processed']['peak_diff_breath']['unit']['peaks_breath_1'].size>0) & (mat['processed']['peak_diff_breath']['unit']['peaks_breath_2'].size>0):
             for _i in indexes:
                 peaks_breath_1 = np.atleast_1d(np.array(mat['processed']['peak_diff_breath']['unit']['peaks_breath_1'][_i]))
                 peaks_breath_2 = np.atleast_1d(np.array(mat['processed']['peak_diff_breath']['unit']['peaks_breath_2'][_i]))
@@ -476,7 +475,7 @@ def plot_summary(export_path):
         
         jaw_tunings = mat['processed']['jaw_tuning']
         indexes = np.where(jaw_tunings>0.9)[0]
-        if (indexes.size>0) & (mat['processed']['peak_diff_lick']['unit']['psth_bins'].size>0):
+        if (indexes.size>0) & (mat['processed']['peak_diff_lick']['unit']['peaks_lick_1'].size>0) & (mat['processed']['peak_diff_lick']['unit']['peaks_lick_2'].size>0):
             for _i in indexes:
                 peaks_lick_1 = np.atleast_1d(np.array(mat['processed']['peak_diff_lick']['unit']['peaks_lick_1'][_i]))
                 peaks_lick_2 = np.atleast_1d(np.array(mat['processed']['peak_diff_lick']['unit']['peaks_lick_2'][_i]))
@@ -498,12 +497,10 @@ def plot_summary(export_path):
             if 'swallow_aligned_licks' in mat['processed'].keys():
                 swallow_aligned_licks.append(mat['processed']['swallow_aligned_licks'])
                 swallow_aligned_breaths.append(mat['processed']['swallow_aligned_breaths'])
-    
     licks = [r for row in swallow_aligned_licks for r in row]
     plot_licking_swallow_summary(licks)
     breaths = [r for row in swallow_aligned_breaths for r in row]
     plot_breath_swallow_summary(breaths)
-    
     peak_diff_br_behv = np.hstack(peak_diff_br_behv)
     peak_diff_br_unit = np.hstack(peak_diff_br_unit)
     peak_diff_lick_behv = np.hstack(peak_diff_lick_behv)
