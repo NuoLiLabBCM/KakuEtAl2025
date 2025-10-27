@@ -27,3 +27,5 @@ Run process_mat.py (Change `input_dir` to the folder containing MAT files genera
 
 ### Step 4
 Run generate_figures.py and generate_activity_maps.m to plot key figures from the [publication](https://www.biorxiv.org/content/10.1101/2025.01.27.635041v1).
+
+Download TIFF required for plotting activity maps [here](https://drive.google.com/file/d/18zMYyCuro2lHrILHIM2xHU-94VT9LCMF/view?usp=drive_link).
