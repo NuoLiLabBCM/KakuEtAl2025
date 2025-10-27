@@ -84,7 +84,7 @@ mi(mi<0.3) = 0;
 plotBrain
 hold on
 temp = swallow_ccf_x;
-ccf_x(:) = 5000;
+swallow_ccf_x(:) = 5000;
 sizeVarMI = (mi*13)+5; 
 [~,idx] = sort(mi);
 scatter3(swallow_ccf_x(idx)/1000, swallow_ccf_z(idx)/1000, swallow_ccf_y(idx)/1000,sizeVarMI(idx),mi(idx), 'filled')
