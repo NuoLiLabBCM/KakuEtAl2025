@@ -20,7 +20,6 @@ num_events = [];
 swallow_pvals = [];
 
 for i = 1:numel(files)
-    disp(num2str(i));
     fname = fullfile(export_path, files(i).name);
     data = load(fname, 'processed');
     if isfield(data, 'processed') && isfield(data.processed, 'ccf_x')
@@ -56,7 +55,7 @@ plotBrain
 hold on
 temp = ccf_unitxA;
 ccf_unitxA(:) = 5000;
-sizeVarMI = (breath_tuning*8)+5; %scale dot size according to modulation index (dotsize range 5-13)
+sizeVarMI = (breath_tuning*8)+5; 
 [~,idx] = sort(breath_tuning);
 scatter3(ccf_unitxA(idx)/1000, ccf_unitzA(idx)/1000, ccf_unityA(idx)/1000,sizeVarMI(idx),breath_tuning(idx),'filled')
 crameri('lajolla',32)
@@ -69,7 +68,7 @@ plotBrain
 hold on
 temp = ccf_unitxA;
 ccf_unitxA(:) = 5000;
-sizeVarMI = (jaw_tuning*8)+5; %scale dot size according to modulation index (dotsize range 5-13)
+sizeVarMI = (jaw_tuning*8)+5; 
 [~,idx] = sort(jaw_tuning);
 scatter3(ccf_unitxA(idx)/1000, ccf_unitzA(idx)/1000, ccf_unityA(idx)/1000,sizeVarMI(idx),jaw_tuning(idx),'filled')
 crameri('lajolla',32)
@@ -86,7 +85,7 @@ plotBrain
 hold on
 temp = swallow_ccf_x;
 ccf_x(:) = 5000;
-sizeVarMI = (mi*13)+5; %scale dot size according to modulation index (dotsize range 5-18)
+sizeVarMI = (mi*13)+5; 
 [~,idx] = sort(mi);
 scatter3(swallow_ccf_x(idx)/1000, swallow_ccf_z(idx)/1000, swallow_ccf_y(idx)/1000,sizeVarMI(idx),mi(idx), 'filled')
 crameri('lajolla',32)
