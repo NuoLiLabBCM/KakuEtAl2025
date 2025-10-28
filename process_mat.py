@@ -7,29 +7,8 @@ import os
 import time
 
 
-# def get_good_trials(mat):
-#     """ Original version (tested and works)"""
-#     tracking = mat['tracking']
-#     side = tracking['camera_3_side']['jaw_x']
-#     bottom = tracking['camera_4_bottom']['jaw_x']
-#     trials_side = tracking['camera_3_side']['trialNum']
-#     trials_bottom = tracking['camera_4_bottom']['trialNum']
-#     trials = np.array(list(set(trials_side) & set(trials_bottom)))
-    
-#     good_trials, bad_trial_bot, bad_trial_side = [], list(set(trials_side) - set(trials_bottom)), list(set(trials_bottom) - set(trials_side))
-#     side = np.array([arr for i, arr in enumerate(side) if i+1 not in bad_trial_bot], dtype=object)
-#     bottom = np.array([arr for i, arr in enumerate(bottom) if i+1 not in bad_trial_side], dtype=object)
-#     for s, b, tr in zip(side, bottom, trials):
-#         if s.size != 1471:
-#             bad_trial_side.append(tr)
-#         if b.size != 1471:
-#             bad_trial_bot.append(tr)
-#         if (s.size == 1471) & (b.size == 1471):
-#             good_trials.append(tr)
-#     return np.array(good_trials), np.array(bad_trial_side), np.array(bad_trial_bot)
-
 def get_good_trials(mat):
-    """ To work with Jian's NWB to MAT export"""
+    """ """
     
     tracking = mat['tracking']
     side = tracking['camera_3_side']['jaw_likelihood']
@@ -623,9 +602,6 @@ def get_peak_diff_breath_behv(mat):
     psth_breath_1=np.mean(psth_breath_1,axis=0)
     psth_breath_2=np.mean(psth_breath_2,axis=0)
     
-    # peaks_lick_1=np.mean(lick2_time[psth_1_i])
-    # peaks_lick_2=np.mean(lick2_time[psth_2_i])
-    
     min_height=7
     psth_1_thr=np.mean(psth_breath_1)+np.std(psth_breath_1)
     if psth_1_thr<min_height:
@@ -1106,7 +1082,6 @@ def get_peak_diff_lick_unit(mat):
     
     return np.array(PSTH_LICK_1, dtype=object), np.array(PSTH_LICK_2, dtype=object), np.array(PSTH_LICK_1_SEM, dtype=object),  np.array(PSTH_LICK_2_SEM, dtype=object), np.array(PSTH_BINS, dtype=object),  np.array(PEAKS_LICK_1, dtype=object), np.array(PEAKS_LICK_2, dtype=object) 
 
-# def detect_swallows(session_key, trial_key, breathing, phase, phase_criticals=[1.4, 2.3], min_vel_duration=0.1):
 def detect_swallows(mat, phase_criticals=[1.2, 1.7], min_vel_duration=0.05):
     """Detect swallow events
     
@@ -1305,7 +1280,6 @@ def get_swallow_aligned_spikes(mat):
     num_units = mat[foi]['spike_times'].shape[0]
     for u in range(num_units):  
         all_spikes = mat[foi]['spike_times'][u].copy()
-        # all_spikes = (ephys.Unit.TrialSpikes & [{'trial': tr} for tr in trial_key] & unit_key).fetch('spike_times', order_by='trial')
         good_spikes = np.array(all_spikes*fs)
         good_spikes = [np.array(d).astype(int) for d in good_spikes]
         
@@ -1411,16 +1385,15 @@ def preprocess(mat):
     
 
 #%% driver
-############## USER INPUT
-foi = 'processed' #change later after veryfing 
+############## USER INPUT 
 input_dir = r'D:/mat/'
-# fname = r'map-export_DL004_20210308_180033_s1_p1_nwb.mat'
 ##############
 
 loop_start = time.perf_counter()
 
 mat_files = glob.glob(os.path.join(input_dir, "*nwb.mat"))
 filenames = [os.path.basename(f) for f in mat_files]
+foi = 'processed'
 for _c, fname in enumerate(filenames):
     start_time = time.perf_counter()
     print("\n\nWorking on {} ({} of {})" .format(fname, _c+1, len(filenames)))
