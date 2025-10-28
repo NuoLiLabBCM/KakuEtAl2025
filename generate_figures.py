@@ -11,14 +11,14 @@ def volcano_plot_licking(mat, max_ibi=None):
     lick_offset_time = mat['processed']['lick_bout_offset']
     ton_onset = mat['processed']['tongue_onset']
     
-    inspir_onset_l=[] # restrict by licking bouts
+    inspir_onset_l=[] 
     for i,val in enumerate(lick_onset_time):
         inspir_onset_l.append(inspir_onset[(inspir_onset>(lick_onset_time[i]+0.2)) & (inspir_onset<(lick_offset_time[i]-0.2))])
     inspir_onset_l=np.array(inspir_onset_l)
     inspir_onset_l=np.hstack(inspir_onset_l)
     
-    licks = [] # lick times
-    n_licks = [] # number of licks in btw breaths
+    licks = [] 
+    n_licks = [] 
     
     ibi = []
     ibi2 = []
@@ -32,8 +32,8 @@ def volcano_plot_licking(mat, max_ibi=None):
         lick=ton_onset[(ton_onset > inspir_onset_l[i-2]) & (ton_onset<inspir_onset_l[i+2])]
         
         lick_in=lick[(lick > inspir_onset_l[i]) & (lick<inspir_onset_l[i+1])]
-        if lick_in.size != 0:  # only include trials with a lick in between the breaths
-            lick_bef=lick[(lick < inspir_onset_l[i])] # find the timing of lick before inspiration onset
+        if lick_in.size != 0:  
+            lick_bef=lick[(lick < inspir_onset_l[i])] 
             if lick_bef.size != 0:
                 lick_bef=lick_bef[-1]
             licks.append(lick - inspir_onset_l[i])
@@ -108,7 +108,7 @@ def volcano_plot_breathing(mat):
     lick_offset_time = mat['processed']['lick_bout_offset']
     ton_onset = mat['processed']['tongue_onset']
     
-    ton_onset_l=[] # restrict by licking bouts
+    ton_onset_l=[] 
     for i,val in enumerate(lick_onset_time):
         ton_onset_l.append(ton_onset[(ton_onset>(lick_onset_time[i]+0.2)) & (ton_onset<(lick_offset_time[i]-0.2))])
     ton_onset_l=np.array(ton_onset_l)
@@ -127,7 +127,7 @@ def volcano_plot_breathing(mat):
         breath=inspir_onset[(inspir_onset > ton_onset_l[i-2]) & (inspir_onset<ton_onset_l[i+2])]
         
         breath_in=breath[(breath > ton_onset_l[i]) & (breath<ton_onset_l[i+1])]
-        if breath_in.size != 0:  # only include trials with a breath in between the licks
+        if breath_in.size != 0:  
             breaths.append(breath - ton_onset_l[i])
             ili.append(ton_onset_l[i+1] - ton_onset_l[i])
             ili2.append(ton_onset_l[i+2] - ton_onset_l[i])
@@ -177,16 +177,16 @@ def volcano_plot_licking_unit(mat, unit_key, max_ibi=None):
     lick_offset_time = mat['processed']['lick_bout_offset']
     ton_onset = mat['processed']['tongue_onset']    
     
-    inspir_onset_l=[] # restrict by licking bouts
+    inspir_onset_l=[]
     for i,val in enumerate(lick_onset_time):
         inspir_onset_l.append(inspir_onset[(inspir_onset>(lick_onset_time[i]+0.2)) & (inspir_onset<(lick_offset_time[i]-0.2))])
     inspir_onset_l=np.array(inspir_onset_l)
     inspir_onset_l=np.hstack(inspir_onset_l)
     
-    licks = [] # lick times
-    n_licks = [] # number of licks in btw breaths
+    licks = []
+    n_licks = [] 
     
-    spikes = [] # where the spikes occur
+    spikes = [] 
     lick2_time=[]
     ibi = []
     ibi2 = []
@@ -200,8 +200,8 @@ def volcano_plot_licking_unit(mat, unit_key, max_ibi=None):
         
         lick_in=lick[(lick > inspir_onset_l[i]) & (lick<inspir_onset_l[i+1])]
         
-        if lick_in.size != 0:  # only include trials with a lick in between the breaths
-            lick_bef=lick[(lick < inspir_onset_l[i])] # find the timing of lick before inspiration onset
+        if lick_in.size != 0: 
+            lick_bef=lick[(lick < inspir_onset_l[i])] 
             lick_bef=lick_bef[-1]
             licks.append(lick - inspir_onset_l[i])
             lick_bef_time.append(lick_bef - inspir_onset_l[i])
@@ -303,7 +303,7 @@ def volcano_plot_breath_unit(mat, unit_key):
         breath=inspir_onset[(inspir_onset > ton_onset_l[i-2]) & (inspir_onset<ton_onset_l[i+2])]
         
         breath_in=breath[(breath > ton_onset_l[i]) & (breath<ton_onset_l[i+1])]
-        if breath_in.size != 0:  # only include trials with a breath in between the licks
+        if breath_in.size != 0: 
             breaths.append(breath - ton_onset_l[i])
             ili.append(ton_onset_l[i+1] - ton_onset_l[i])
             ili2.append(ton_onset_l[i+2] - ton_onset_l[i])
@@ -347,16 +347,16 @@ def plot_licking_swallow_summary(licks, num_after=2, num_before=4, max_ili=1/3, 
     filtered_licks = []
     for lick in licks:
         lick = np.atleast_1d(lick)
-        if (lick[lick>=0].size >= num_after) & (lick[lick<0].size >= num_before): #at least 2 licks after and 4 licks before
+        if (lick[lick>=0].size >= num_after) & (lick[lick<0].size >= num_before): 
             before_4, before_3, before_2, before_1 = lick[lick<0][-num_before:]
             after_1, after_2 = lick[lick>=0][:num_after]
-            _ili = after_1 - before_1 #sort by.. change here
-            if (_ili < max_ili) & (_ili > min_ili): #reject events if lick rate drops below 3hz or goes above 15hz
+            _ili = after_1 - before_1 
+            if (_ili < max_ili) & (_ili > min_ili): 
                 ili.append(_ili) 
                 filtered_licks.append(lick)
     ili = np.array(ili)
-    sorted_ix = np.argsort(ili) #sort
-    sorted_ix = sorted_ix[::-1] #sort descending
+    sorted_ix = np.argsort(ili) 
+    sorted_ix = sorted_ix[::-1] 
     licks_sorted = [filtered_licks[i] for i in sorted_ix]
     licks = licks_sorted.copy()
     
@@ -373,11 +373,11 @@ def plot_licking_swallow_summary(licks, num_after=2, num_before=4, max_ili=1/3, 
     ili_0 = np.array(ili_0)
     ili_1 = np.array(ili_1)
     ili_neg1 = np.array(ili_neg1)
-    boundary = ili_0.size // split #split into top 1/3rd
+    boundary = ili_0.size // split 
     
     start = -0.3
     stop = 0.3
-    step = 0.0075 #0.0075
+    step = 0.0075 
     bins = np.arange(start, stop + step + step, step) - step/2
     
     
@@ -403,11 +403,11 @@ def plot_breath_swallow_summary(licks, num_after=2, num_before=4, max_ili=1/2, m
     filtered_licks = []
     for lick in licks:
         lick = np.atleast_1d(lick)
-        if (lick[lick>=0].size >= num_after) & (lick[lick<0].size >= num_before): #at least 2 licks after and 4 licks before
+        if (lick[lick>=0].size >= num_after) & (lick[lick<0].size >= num_before): 
             before_4, before_3, before_2, before_1 = lick[lick<0][-num_before:]
             after_1, after_2 = lick[lick>=0][:num_after]
-            _ili = after_1 - before_1 #sort by.. change here
-            if (_ili < max_ili) & (_ili > min_ili): #reject events if lick rate drops below 3hz or goes above 15hz
+            _ili = after_1 - before_1 
+            if (_ili < max_ili) & (_ili > min_ili): 
                 ili.append(_ili) 
                 filtered_licks.append(lick)
     ili = np.array(ili)
@@ -671,16 +671,16 @@ def plot_volcano_licking_swallow(input_dir='.', num_after=2, num_before=4, max_i
     ili = []
     filtered_licks = []
     for lick in licks:
-        if (lick[lick>=0].size >= num_after) & (lick[lick<0].size >= num_before): #at least 2 licks after and 4 licks before
+        if (lick[lick>=0].size >= num_after) & (lick[lick<0].size >= num_before): 
             before_4, before_3, before_2, before_1 = lick[lick<0][-num_before:]
             after_1, after_2 = lick[lick>=0][:num_after]
-            _ili = after_1 - before_1 #sort by.. change here
-            if (_ili < max_ili) & (_ili > min_ili): #reject events if lick rate drops below 3hz or goes above 15hz
+            _ili = after_1 - before_1 
+            if (_ili < max_ili) & (_ili > min_ili): 
                 ili.append(_ili) 
                 filtered_licks.append(lick)
     ili = np.array(ili)
-    sorted_ix = np.argsort(ili) #sort
-    sorted_ix = sorted_ix[::-1] #sort descending
+    sorted_ix = np.argsort(ili) 
+    sorted_ix = sorted_ix[::-1] 
     licks_sorted = [filtered_licks[i] for i in sorted_ix]
     
     fig, ax = plt.subplots(figsize=(6.5,8.5))
@@ -725,16 +725,16 @@ def plot_volcano_breathing_swallow(input_dir='.', num_after=2, num_before=4, min
     ili = []
     filtered_licks = []
     for breath in breaths:
-        if (breath[breath>=0].size >= num_after) & (breath[breath<0].size >= num_before): #at least 2 licks after and 4 licks before
+        if (breath[breath>=0].size >= num_after) & (breath[breath<0].size >= num_before): 
             before_4, before_3, before_2, before_1 = breath[breath<0][-num_before:]
             after_1, after_2 = breath[breath>=0][:num_after]
-            _ili = after_1 - before_1 #sort by.. change here
-            if (_ili < max_ili) & (_ili > min_ili): #reject events if lick rate drops below 3hz or goes above 15hz
+            _ili = after_1 - before_1 
+            if (_ili < max_ili) & (_ili > min_ili): 
                 ili.append(_ili) 
                 filtered_licks.append(breath)
     ili = np.array(ili)
-    sorted_ix = np.argsort(ili) #sort
-    sorted_ix = sorted_ix[::-1] #sort descending
+    sorted_ix = np.argsort(ili) 
+    sorted_ix = sorted_ix[::-1] 
     breaths_sorted = [filtered_licks[i] for i in sorted_ix]
     
     fig, ax = plt.subplots(figsize=(6.5,8.5))
@@ -769,7 +769,7 @@ def plot_jaw_tuning_red(mat, unit_key, trials, axs=None):
     axs.plot(np.append(tofitx, tofitx[0]), np.append(tofity, tofity[0]), color='red')
     axs.fill_between(np.append(tofitx, tofitx[0]), np.append(jaw_l, jaw_l[0]), np.append(jaw_h, jaw_h[0]), color='red', alpha=0.3)
     axs.set_rmax(max_fit_y)
-    axs.set_rticks([])  # no radial ticks
+    axs.set_rticks([])  
     axs.grid(False)
     axs.set_xticks([])
     
@@ -792,7 +792,7 @@ def plot_jaw_tuning_red(mat, unit_key, trials, axs=None):
         ax.set_xticks([])
         ax.set_yticks([])
         
-def plot_breathing_tuning_red(mat, unit_key, trials, axs=None):
+def plot_breathing_tuning_green(mat, unit_key, trials, axs=None):
     indexes = [i for i, d in enumerate(mat['processed']['movement_timing_unit_keys']) if d == unit_key]
     idx = indexes[0]
     good_trials = mat['processed']['trials']
@@ -811,7 +811,7 @@ def plot_breathing_tuning_red(mat, unit_key, trials, axs=None):
     axs.plot(np.append(tofitx, tofitx[0]), np.append(tofity, tofity[0]), color='green')
     axs.fill_between(np.append(tofitx, tofitx[0]), np.append(jaw_l, jaw_l[0]), np.append(jaw_h, jaw_h[0]), color='green', alpha=0.3)
     axs.set_rmax(max_fit_y)
-    axs.set_rticks([])  # no radial ticks
+    axs.set_rticks([])  
     axs.grid(False)
     axs.set_xticks([])
     
@@ -904,7 +904,7 @@ unit_key={'subject_id': 1111, 'session': 4, 'insertion_number': 2, 'clustering_m
 fpath = os.path.join(export_path, 'map-export_DL014_20210514_122757_s4_p2_nwb_processed.mat')
 mat = loadmat(fpath, simplify_cells=True)
 trials= np.array([50, 51, 52])
-plot_breathing_tuning_red(mat, unit_key, trials)
+plot_breathing_tuning_green(mat, unit_key, trials)
 
 fpath = os.path.join(export_path, 'map-export_DL026_20210628_193921_s5_p2_nwb_processed.mat')
 mat = loadmat(fpath, simplify_cells=True)
