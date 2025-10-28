@@ -10,7 +10,7 @@ Data analysis code for [**Kaku, Liu et al. A brainstem map of orofacial rhythms*
 #### Environment
 The environment can be installed using requirements.yml. 
 
-`conda env create -f requiements.yml`
+`conda env create -f requirements.yml`
 
 
 
