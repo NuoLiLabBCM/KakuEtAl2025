@@ -1390,7 +1390,6 @@ input_dir = r'D:/mat/'
 ##############
 
 loop_start = time.perf_counter()
-
 mat_files = glob.glob(os.path.join(input_dir, "*nwb.mat"))
 filenames = [os.path.basename(f) for f in mat_files]
 foi = 'processed'
