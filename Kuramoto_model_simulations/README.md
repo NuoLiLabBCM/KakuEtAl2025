@@ -15,4 +15,5 @@ run sim_simple_asym_real.m
 ## Compare a event-gated model vs. a continuously-coupled Kuramoto model
 
 run sim_model_comparison_stall_conditional_phase.m
+
 run sim_model_comparison_kuramoto_conditional_phase.m
